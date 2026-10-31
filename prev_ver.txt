@@ -1,0 +1,187 @@
+import 'package:flutter/material.dart';
+
+class Umbrella {
+  final int id;
+  final String location;
+  bool available;
+
+  Umbrella({
+    required this.id,
+    required this.location,
+    required this.available,
+  });
+}
+
+List<Umbrella> umbrellaList = [
+  Umbrella(
+    id: 1,
+    location: 'Tovarischeskiy pereulok',
+    available: true,
+  ),
+  Umbrella(
+    id: 2,
+    location: 'Tovarischeskiy pereulok',
+    available: true,
+  ),
+];
+
+class UmbrellaCard extends StatelessWidget {
+  final Umbrella umbrella;
+
+  const UmbrellaCard({
+    super.key,
+    required this.umbrella,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(Icons.umbrella),
+            SizedBox(width: 16),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Umbrella #${umbrella.id}'),
+                Text(umbrella.location),
+                Text(
+                  umbrella.available ? 'Available' : 'Unavailable',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UmbrellaDetailsScreen extends StatelessWidget {
+  final Umbrella umbrella;
+
+  const UmbrellaDetailsScreen({
+    super.key,
+    required this.umbrella,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Umbrella #${umbrella.id}'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.umbrella,
+              size: 80,
+            ),
+
+            SizedBox(height: 20),
+
+            Text(
+              'Umbrella #${umbrella.id}',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              'Location: ${umbrella.location}',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              umbrella.available
+                  ? 'Status: Available'
+                  : 'Status: Unavailable',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+
+            SizedBox(height: 30),
+
+            if (umbrella.available)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    umbrella.available = false;
+                    Navigator.pop(context);
+                  },
+                  child: Text('Rent'),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UmbrellaScreen extends StatefulWidget {
+  const UmbrellaScreen({super.key});
+
+  @override
+  State<UmbrellaScreen> createState() {
+    return _UmbrellaScreenState();
+  }
+}
+
+class _UmbrellaScreenState extends State<UmbrellaScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Umbrellas'),
+      ),
+      body: ListView(
+        children: umbrellaList.map((umbrella) {
+          return GestureDetector(
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return UmbrellaDetailsScreen(
+                      umbrella: umbrella,
+                    );
+                  },
+                ),
+              );
+
+              setState(() {});
+            },
+            child: UmbrellaCard(
+              umbrella: umbrella,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: UmbrellaScreen(),
+    ),
+  );
+}

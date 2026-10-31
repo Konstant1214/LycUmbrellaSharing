@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) @map("id")
+  name      String   @map("name")
+  login     String   @unique @map("login")
+  password  String   @map("password")
+  phone     String?  @map("phone")
+  createdAt DateTime @default(now()) @map("createdat")
+  
+  rentals   Rental[]
+}
+
+model Terminal {
+  id             Int        @id @default(autoincrement())
+  name           String
+  address        String
+  availableUmbrellas Int   @default(0) @map("availableumbrellas")
+  
+  rentals        Rental[]
+}
+
+model Rental {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("userid")
+  terminalId  Int      @map("terminalid")
+  startedAt   DateTime @default(now()) @map("startedat")
+  endedAt     DateTime? @map("endedat")
+  isActive    Boolean  @default(true) @map("isactive")
+  
+  user      User    @relation(fields: [userId], references: [id])
+  terminal  Terminal @relation(fields: [terminalId], references: [id])
+}

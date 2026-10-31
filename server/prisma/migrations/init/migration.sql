@@ -1,0 +1,25 @@
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "User" (
+  "id" SERIAL PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "login" TEXT UNIQUE NOT NULL,
+  "password" TEXT NOT NULL,
+  "phone" TEXT,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Terminal" (
+  "id" SERIAL PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "address" TEXT NOT NULL,
+  "availableUmbrellas" INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS "Rental" (
+  "id" SERIAL PRIMARY KEY,
+  "userId" INTEGER NOT NULL REFERENCES "User"("id"),
+  "terminalId" INTEGER NOT NULL REFERENCES "Terminal"("id"),
+  "startedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+  "endedAt" TIMESTAMP,
+  "isActive" BOOLEAN NOT NULL DEFAULT TRUE
+);
